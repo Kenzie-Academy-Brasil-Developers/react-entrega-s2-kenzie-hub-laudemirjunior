@@ -9,13 +9,13 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import api from "../../services/api";
 import { toast } from "react-toastify";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 
-export default function Singup() {
+export default function Singup({ authenticated }) {
   const schema = yup.object().shape({
     name: yup.string().required("Campo obrigatório"),
+    course_module: yup.string().required("Campo obrigatório"),
     email: yup.string().email("Email inválido").required("Campo obrigatório"),
-    courseModule: yup.string().required("Campo obrigatório"),
     password: yup
       .string()
       .min(8, "Mínimo de 8 digitos")
@@ -34,10 +34,10 @@ export default function Singup() {
     resolver: yupResolver(schema),
   });
 
-  const history = useHistory();
+  const history = useHistory({});
 
-  const onSubmitFunction = ({ name, email, password, course_module }) => {
-    const user = { name, email, password, course_module };
+  const onSubmitFunction = ({ name, course_module, email, password }) => {
+    const user = { name, course_module, email, password };
     api
       .post("/user", user)
       .then((response) => {
@@ -46,6 +46,10 @@ export default function Singup() {
       })
       .catch((err) => toast.error("Erro ao criar a conta, teste outro email"));
   };
+
+  if (authenticated) {
+    return <Redirect to="/dashboard" />;
+  }
 
   return (
     <Container>
@@ -62,11 +66,11 @@ export default function Singup() {
           />
           <Input
             register={register}
-            name="courseModule"
+            name="course_module"
             icon={GiLunarModule}
             label="Módulo do curso"
             placeholder="Seu módulo do curso"
-            error={errors.courseModule?.message}
+            error={errors.course_module?.message}
           />
           <Input
             register={register}

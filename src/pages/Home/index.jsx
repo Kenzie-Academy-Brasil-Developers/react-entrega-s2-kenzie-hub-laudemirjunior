@@ -1,13 +1,18 @@
 import Button from "../../components/Button";
 import { useHistory } from "react-router";
 import { Container, Content } from "./styles";
+import { Redirect } from "react-router-dom";
 
-const Home = () => {
+function Home({ authenticated }) {
   const history = useHistory();
 
   const handleNavigation = (path) => {
     return history.push(path);
   };
+
+  if (authenticated) {
+    return <Redirect to="/dashboard" />;
+  }
 
   return (
     <div>
@@ -27,6 +32,6 @@ const Home = () => {
       </Container>
     </div>
   );
-};
+}
 
 export default Home;

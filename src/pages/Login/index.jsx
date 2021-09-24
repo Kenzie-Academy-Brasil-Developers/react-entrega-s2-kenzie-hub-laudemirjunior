@@ -9,8 +9,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import api from "../../services/api";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 
-export default function Singup() {
+export default function Login({ authenticated, setAuthenticated }) {
   const schema = yup.object().shape({
     name: yup.string().required("Campo obrigatório"),
     email: yup.string().email("Email inválido").required("Campo obrigatório"),
@@ -44,6 +45,10 @@ export default function Singup() {
       })
       .catch((err) => toast.error("Erro ao criar a conta, teste outro email"));
   };
+
+  if (authenticated) {
+    return <Redirect to="/dashboard" />;
+  }
 
   return (
     <Container>

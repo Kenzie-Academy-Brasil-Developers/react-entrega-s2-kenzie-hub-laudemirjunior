@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 export const Container = styled.div`
   text-align: left;
   width: 300px;
@@ -18,6 +18,14 @@ export const InputContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  ${(props) =>
+    props.isErrored &&
+    css`
+      border-color: red;
+      svg {
+        color: red;
+      }
+    `}
   input {
     border-radius: 5px;
     width: 280px;
