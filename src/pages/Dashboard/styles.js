@@ -7,6 +7,17 @@ export const Container = styled.div`
   align-items: center;
 `;
 
+export const Logout = styled.div`
+  width: 100px;
+  position: absolute;
+  bottom: 0;
+  margin: 0.5rem;
+  opacity: 0.7;
+  &:hover {
+    opacity: 1;
+  }
+`;
+
 export const Content = styled.div`
   display: flex;
   flex-direction: column;

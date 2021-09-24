@@ -17,7 +17,8 @@ export const Content = styled.div`
   div {
     display: flex;
     margin-top: 3rem;
-    justify-content: space-evenly;
+    justify-content: space-around;
+    gap: 1rem;
   }
   span {
     font-size: 1.5rem;

@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Container, Content, Cards } from "./styles";
+import { Container, Content, Cards, Logout } from "./styles";
 import Button from "../../components/Button/index";
 import Input from "../../components/Input/index";
 import Card from "../../components/Card";
@@ -58,6 +58,11 @@ export default function Dashboard({ authenticated }) {
       .then(() => toast.warning("Tecnologia excluida com Sucesso"));
   };
 
+  function logout() {
+    localStorage.clear();
+    window.location.href = "/login";
+  }
+
   const onSubmitFunction = (data) => {
     api
       .post(
@@ -83,6 +88,9 @@ export default function Dashboard({ authenticated }) {
 
   return (
     <Container>
+      <Logout>
+        <Button onClick={() => logout()}>Logout</Button>
+      </Logout>
       <Content>
         <h1>Minhas tecnologias</h1>
         <form onSubmit={handleSubmit(onSubmitFunction)}>
