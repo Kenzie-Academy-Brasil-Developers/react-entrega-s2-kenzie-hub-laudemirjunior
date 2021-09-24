@@ -8,20 +8,14 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import api from "../../services/api";
 import { toast } from "react-toastify";
-import { useHistory } from "react-router-dom";
 import { useHistory, Redirect } from "react-router-dom";
 
 export default function Login({ authenticated, setAuthenticated }) {
   const schema = yup.object().shape({
-    name: yup.string().required("Campo obrigatório"),
     email: yup.string().email("Email inválido").required("Campo obrigatório"),
     password: yup
       .string()
       .min(8, "Mínimo de 8 digitos")
-      .required("Campo obrigatório"),
-    passwordConfirm: yup
-      .string()
-      .oneOf([yup.ref("password")], "Senhas diferentes")
       .required("Campo obrigatório"),
   });
 
@@ -35,15 +29,21 @@ export default function Login({ authenticated, setAuthenticated }) {
 
   const history = useHistory();
 
-  const onSubmitFunction = ({ name, email, password, course_module }) => {
-    const user = { name, email, password, course_module };
+  const onSubmitFunction = (data) => {
+    console.log(data);
     api
-      .post("/user", user)
+      .post("/sessions", data)
       .then((response) => {
-        toast.success("Sucesso ao criar a conta");
-        return history.push("/login");
+        const { token } = response.data;
+        localStorage.setItem("@KenzieHub:token", JSON.stringify(token));
+        localStorage.setItem(
+          "@KenzieHub:id",
+          JSON.stringify(response.data.user.id)
+        );
+        setAuthenticated(true);
+        return history.push("/dashboard");
       })
-      .catch((err) => toast.error("Erro ao criar a conta, teste outro email"));
+      .catch((err) => toast.error("Email ou senha inválidos"));
   };
 
   if (authenticated) {

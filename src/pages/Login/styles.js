@@ -15,7 +15,7 @@ export const Content = styled.div`
   height: 600px;
   text-align: center;
   form {
-    height: 350px;
+    height: 300px;
     display: flex;
     justify-content: space-between;
     flex-direction: column;

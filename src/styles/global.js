@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import tec from "../assets/tec.jpg";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -15,8 +16,8 @@ const GlobalStyle = createGlobalStyle`
       --black: #1F2326;
         }
   body{
-      background: var(--botBlue);
-      color: var(--black);
+    background: var(--botBlue);
+    color: var(--black);
   }
   body, input, button {
     font-family: 'Quicksand', sans-serif;

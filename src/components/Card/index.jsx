@@ -4,9 +4,13 @@ import Button from "../Button";
 const Card = ({ title, status, onClick }) => {
   return (
     <Container>
-      <h1>{title}</h1>
-      <h2>{status}</h2>
-      <Button onClick={onClick}>Concluir</Button>
+      <section>
+        <h2>{title}</h2>
+        <h3>{status}</h3>
+      </section>
+      <div>
+        <Button onClick={onClick}>Concluir</Button>
+      </div>
     </Container>
   );
 };

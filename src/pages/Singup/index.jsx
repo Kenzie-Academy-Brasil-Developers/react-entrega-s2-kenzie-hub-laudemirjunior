@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import Input from "../../components/Input/index";
 import { FiUser, FiMail, FiLock } from "react-icons/fi";
 import { GiLunarModule } from "react-icons/gi";
+import { GrContactInfo } from "react-icons/gr";
+import { AiOutlineBook } from "react-icons/ai";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import api from "../../services/api";
@@ -16,6 +18,8 @@ export default function Singup({ authenticated }) {
     name: yup.string().required("Campo obrigatório"),
     course_module: yup.string().required("Campo obrigatório"),
     email: yup.string().email("Email inválido").required("Campo obrigatório"),
+    bio: yup.string().required("Campo obrigatório"),
+    contact: yup.string().required("Campo obrigatório"),
     password: yup
       .string()
       .min(8, "Mínimo de 8 digitos")
@@ -36,10 +40,9 @@ export default function Singup({ authenticated }) {
 
   const history = useHistory({});
 
-  const onSubmitFunction = ({ name, course_module, email, password }) => {
-    const user = { name, course_module, email, password };
+  const onSubmitFunction = (data) => {
     api
-      .post("/user", user)
+      .post("/users", data)
       .then((response) => {
         toast.success("Sucesso ao criar a conta");
         return history.push("/login");
@@ -71,6 +74,22 @@ export default function Singup({ authenticated }) {
             label="Módulo do curso"
             placeholder="Seu módulo do curso"
             error={errors.course_module?.message}
+          />
+          <Input
+            register={register}
+            name="bio"
+            icon={AiOutlineBook}
+            label="Biografia"
+            placeholder="Sua biografia"
+            error={errors.bio?.message}
+          />
+          <Input
+            register={register}
+            name="contact"
+            icon={GrContactInfo}
+            label="Contao"
+            placeholder="Seu contato"
+            error={errors.contact?.message}
           />
           <Input
             register={register}

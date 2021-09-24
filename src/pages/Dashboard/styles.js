@@ -1,38 +1,39 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 0 38px;
+  align-items: center;
 `;
 
-export const InputContainer = styled.form`
-  flex: 1;
-  margin-top: 32px;
-  padding: 0 38px;
-  section {
-    display: flex;
-    > div {
-      max-width: 80%;
-      flex: 1;
-      margin-right: 16px;
-    }
-    button {
-      max-width: 260px;
-      height: 60px;
-      margin: 0;
-    }
-  }
-`;
-
-export const TaskContainer = styled.div`
-  padding: 0 38px;
-  margin-top: 32px;
+export const Content = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  div {
-    margin-top: 16px;
-    margin-right: 32px;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  h1 {
+    color: var(--topBlue);
+    font-weight: 600;
+    font-size: 3rem;
+    text-shadow: var(--black) 2px 2px;
   }
+  form {
+    display: flex;
+    width: 300px;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+`;
+
+export const Cards = styled.div`
+  max-width: 700px;
+  display: flex;
+  margin-top: 3rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: space-around;
 `;

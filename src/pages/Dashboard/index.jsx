@@ -1,55 +1,70 @@
-import { Redirect } from "react-router";
-import { Container, InputContainer } from "./styles";
-import Input from "../../components/Input";
 import { useForm } from "react-hook-form";
-import { FiEdit2 } from "react-icons/fi";
-import Button from "../../components/Button";
+import { Container, Content, Cards } from "./styles";
+import Button from "../../components/Button/index";
+import Input from "../../components/Input/index";
 import Card from "../../components/Card";
-import { TaskContainer } from "./styles";
-import { useEffect, useState } from "react";
+import { FiMail, FiLock } from "react-icons/fi";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import api from "../../services/api";
+import { useEffect, useState } from "react";
+import { Redirect } from "react-router-dom";
 import { toast } from "react-toastify";
-function Dashboard({ authenticated }) {
-  const { register, handleSubmit } = useForm();
-  const [task, setTask] = useState([]);
+
+export default function Dashboard({ authenticated }) {
+  const [id] = useState(JSON.parse(localStorage.getItem("@KenzieHub:id")));
+  const [techs, setTechs] = useState([]);
+  const schema = yup.object().shape({
+    title: yup.string().required("Campo obrigatório"),
+    status: yup.string().required("Campo obrigatório"),
+  });
+
   const [token] = useState(
-    JSON.parse(localStorage.getItem("@Doit:token")) || ""
+    JSON.parse(localStorage.getItem("@KenzieHub:token")) || ""
   );
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
   function loadTasks() {
     api
-      .get("/task", {
+      .get(`users/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        params: {
-          completed: false,
-        },
       })
-      .then((response) => {
-        const apiTasks = response.data.data.map((task) => ({
-          ...task,
-          createdAt: new Date(task.createdAt).toLocaleDateString("pt-BR", {
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-          }),
-        }));
-        setTask(apiTasks);
-      })
-      .catch((err) => console.log(err));
+      .then((response) => setTechs(response.data.techs));
   }
+
   useEffect(() => {
     loadTasks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const onSubmit = ({ task }) => {
-    if (!task) {
-      return toast.error("Complete o campo para enviar uma tarefa");
-    }
+
+  const handleCompleted = (id) => {
+    const newTech = techs.filter((item) => item.id !== id);
+    api
+      .delete(`/users/techs//${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((reponse) => setTechs(newTech))
+      .then(() => toast.warning("Tecnologia excluida com Sucesso"));
+  };
+
+  const onSubmitFunction = (data) => {
     api
       .post(
-        "/task",
+        "/users/techs",
         {
-          description: task,
+          title: data.title,
+          status: data.status,
         },
         {
           headers: {
@@ -57,51 +72,53 @@ function Dashboard({ authenticated }) {
           },
         }
       )
-      .then((response) => loadTasks());
+      .then(() => loadTasks())
+      .then(() => toast.success("Tecnologia adicionada com sucesso"))
+      .catch(() => toast.error("Adicione um tecnologia diferente"));
   };
-  const handleCompleted = (id) => {
-    const newTasks = task.filter((task) => task._id !== id);
-    api
-      .put(
-        `/task/${id}`,
-        { completed: true },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((reponse) => setTask(newTasks));
-  };
+
   if (!authenticated) {
     return <Redirect to="/login" />;
   }
+
   return (
     <Container>
-      <InputContainer onSubmit={handleSubmit(onSubmit)}>
-        <time>7 de maio de 2021</time>
-        <section>
+      <Content>
+        <h1>Minhas tecnologias</h1>
+        <form onSubmit={handleSubmit(onSubmitFunction)}>
           <Input
-            icon={FiEdit2}
             register={register}
-            name="task"
-            error=""
-            placeHolder="Nova Tarefa"
+            name="title"
+            icon={FiMail}
+            label="Tecnologia"
+            placeholder="Digite uma tecnologia"
+            error={errors.title?.message}
           />
-          <Button type="submit">Adicionar</Button>
-        </section>
-      </InputContainer>
-      <TaskContainer>
-        {task.map((task) => (
-          <Card
-            key={task._id}
-            title={task.description}
-            date={task.createdAt}
-            onClick={() => handleCompleted(task._id)}
+          <Input
+            register={register}
+            name="status"
+            icon={FiLock}
+            label="Status"
+            placeholder="Digite o status"
+            type="text"
+            S
+            error={errors.status?.message}
           />
-        ))}
-      </TaskContainer>
+          <Button type="submit">Enviar</Button>
+        </form>
+      </Content>
+      <Cards>
+        {techs.map((item) => {
+          return (
+            <Card
+              key={item.id}
+              title={item.title}
+              status={item.status}
+              onClick={() => handleCompleted(item.id)}
+            />
+          );
+        })}
+      </Cards>
     </Container>
   );
 }
-export default Dashboard;
